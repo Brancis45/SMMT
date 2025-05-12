@@ -1,12 +1,15 @@
 /mvnw text eol=lf
 *.cmd text eol=crlf
 
+build/** linguist-vendored
+target/** linguist-vendored
 static/** linguist-vendored
 public/** linguist-vendored
 node_modules/** linguist-vendored
-build/** linguist-vendored
-target/** linguist-vendored
+venv/** linguist-vendored
 *.min.js linguist-vendored
+*.css linguist-vendored
 *.html linguist-vendored
+*.tex linguist-vendored
 
 *.java linguist-language=Java
