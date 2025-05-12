@@ -1,4 +1,3 @@
-# Ignore non-code or misleading files
 *.md linguist-detectable=false
 *.txt linguist-detectable=false
 *.ipynb linguist-detectable=false
@@ -15,5 +14,4 @@ docs/** linguist-vendored
 build/** linguist-vendored
 target/** linguist-vendored
 
-# Force Java as main language
 *.java linguist-language=Java
