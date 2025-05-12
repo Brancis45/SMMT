@@ -1,5 +1,3 @@
 *.html linguist-vendored
 *.css linguist-vendored
 *.toc linguist-vendored
-
-*.java linguist-language=Java
