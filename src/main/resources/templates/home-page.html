@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home Page</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        /* Header bar styling */
+        .header-bar {
+            background-color: lightblue;
+            border-bottom: 1px solid black;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        /* Machine list container style*/
+        .machine-list {
+            padding: 20px;
+        }
+        /* Style machine item with spacing */
+        .machine-item {
+            padding: 10px 0;
+            margin-bottom: 10px;
+            border-bottom: 1px solid gray;
+        }
+
+        .highlight {
+            background-color: #ffff99; /* light yellow */
+            border: 1px solid #ccc;
+            padding: 5px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+<div class="header-bar">
+    <div class="w-75">
+        <input type="text" id="machineSearch" class="form-control" placeholder="Search machines...">
+    </div>
+    <div>
+        <button id="logoutBtn" class="btn btn-light">LOGOUT</button>
+    </div>
+</div>
+
+<div class="container machine-list" id="machineList">
+    <!-- Machine items dynamically loaded here -->
+</div>
+
+<script>
+    // Global array to store machines (each machine object should have:
+    // ip_address, cpu_usage, ram_usage, free_ram, recorded_at)
+    let machines = [];
+
+    // Function to load all machines from the API endpoint
+    async function loadMachines() {
+        try {
+            // Get all latest metrics for each machine
+            const response = await fetch('/allLatestMetrics');
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            machines = await response.json();
+            renderMachineList();
+        } catch (error) {
+            console.error('Error loading machines:', error);
+        }
+    }
+
+    // Function to format the timestamp
+    function formatTimestamp(isoTimestamp) {
+        const d = new Date(isoTimestamp);
+        const hours = d.getHours().toString().padStart(2, '0');
+        const minutes = d.getMinutes().toString().padStart(2, '0');
+        const seconds = d.getSeconds().toString().padStart(2, '0');
+        const timeStr = `${hours}:${minutes}:${seconds}`;
+        const year = d.getFullYear();
+        const month = (d.getMonth() + 1).toString().padStart(2, '0');
+        const day = d.getDate().toString().padStart(2, '0');
+        const dateStr = `${year}-${month}-${day}`;
+        return `${timeStr} ${dateStr}`;
+    }
+
+    // Function to render machine list and filter based on search input
+    function renderMachineList() {
+        const searchQuery = document.getElementById('machineSearch').value.toLowerCase();
+        const machineListDiv = document.getElementById('machineList');
+        machineListDiv.innerHTML = ''; // Clear current list
+
+        machines.forEach(machine => {
+            const ipAddress = machine.ip_address.trim().toLowerCase();
+
+            // Show machine if search query is empty OR it matches part of IP
+            if (searchQuery === '' || ipAddress.includes(searchQuery)) {
+                const machineDiv = document.createElement('div');
+                machineDiv.className = 'machine-item';
+
+                if (searchQuery !== '' && ipAddress.includes(searchQuery)) {
+                    machineDiv.classList.add('highlight');
+                }
+
+                // Format RAM, Free RAM and timestamp
+                const formattedTimestamp = formatTimestamp(machine.recorded_at);
+                const ramFormatted = parseFloat(machine.ram_usage).toFixed(2);
+                const freeFormatted = parseFloat(machine.free_ram).toFixed(2);
+
+                machineDiv.innerHTML = `<strong>${machine.ip_address}</strong> - CPU: ${machine.cpu_usage}%, RAM: ${ramFormatted} GB, Free: ${freeFormatted}% (${formattedTimestamp})`;
+                machineListDiv.appendChild(machineDiv);
+            }
+        });
+    }
+
+    document.getElementById('machineSearch').addEventListener('keyup', renderMachineList);
+
+    setInterval(loadMachines, 30000);
+
+    loadMachines();
+
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+        window.location.href = '/logout';
+    });
+</script>
+</body>
+</html>
