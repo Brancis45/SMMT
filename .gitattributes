@@ -1,17 +1,1 @@
-*.md linguist-detectable=false
-*.txt linguist-detectable=false
-*.ipynb linguist-detectable=false
-*.sty linguist-detectable=false
-*.cls linguist-detectable=false
-*.html linguist-vendored
-*.css linguist-vendored
-*.js linguist-vendored
-*.json linguist-vendored
 *.toc linguist-vendored
-venv/** linguist-vendored
-node_modules/** linguist-vendored
-docs/** linguist-vendored
-build/** linguist-vendored
-target/** linguist-vendored
-
-*.java linguist-language=Java
