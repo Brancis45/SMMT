@@ -15,7 +15,7 @@ import java.sql.Statement;
 
 import static org.junit.Assert.*;
 
-public class SendingTest {
+public class BackendTest {
 
     private static final int PORT = 55440;
     private static final String DB_URL = "jdbc:mysql://localhost:3306/sys";
@@ -34,7 +34,7 @@ public class SendingTest {
     @Test
     public void testServerReceivesAndStoresData() throws Exception {
         InetAddress address = InetAddress.getByName("localhost");
-        String jsonData = "{\"cpu_usage\": 75.5, \"ram_usage\": 25.3, \"free_ram\": 1024.0}";
+        String jsonData = "{\"cpu_usage\": 75.5, \"ram_usage\": 25.3, \"free_ram\": 30.0}";
         byte[] buffer = jsonData.getBytes();
         DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, PORT);
         try (DatagramSocket socket = new DatagramSocket()) {
@@ -52,7 +52,7 @@ public class SendingTest {
             assertTrue("No data inserted into the database", rs.next());
             assertEquals(75.5f, rs.getFloat("cpu_usage"), 0.01);
             assertEquals(25.3f, rs.getFloat("ram_usage"), 0.01);
-            assertEquals(1024.0f, rs.getFloat("free_ram"), 0.01);
+            assertEquals(30.0f, rs.getFloat("free_ram"), 0.01);
         }
     }
 
